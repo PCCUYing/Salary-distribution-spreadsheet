@@ -1,0 +1,227 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: '微軟正黑體', sans-serif;
+    line-height: 1.6;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+h2 {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    display: inline-block;
+    width: 100px;
+    font-weight: bold;
+}
+
+input {
+    padding: 0.5rem;
+    width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    display: block;
+    width: 200px;
+    margin: 2rem auto;
+    padding: 0.8rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.result-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.result-section p {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+} 
+.results-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.text-results {
+    flex: 1;
+    padding-top: 6rem;
+}
+
+.text-results p {
+    margin: 1.5rem 0;
+    font-size: 1.5rem;
+    color: #222;
+}
+
+.chart-container {
+    flex: 1;
+    max-width: 400px;
+}
+
+.savings-control {
+    margin: 15px 0;
+}
+
+.ratio-control {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #f5f5f5;
+    padding: 10px 15px;
+    border-radius: 8px;
+    width: fit-content;
+}
+
+.savings-slider {
+    width: 150px;
+    height: 6px;
+    -webkit-appearance: none;
+    background: #ddd;
+    border-radius: 3px;
+    outline: none;
+}
+
+.ratio-value {
+    font-size: 1.1em;
+    font-weight: bold;
+    min-width: 50px;
+    transition: color 0.3s ease;
+}
+
+.ratio-value.warning {
+    color: #ff9800;  /* 橙色警告 */
+}
+
+.ratio-value.good {
+    color: #4CAF50;  /* 綠色適中 */
+}
+
+.ratio-value.danger {
+    color: #f44336;  /* 紅色警告 */
+}
+
+.savings-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #4CAF50;  /* 預設使用綠色 */
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.savings-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* 新增彈出視窗相關樣式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    animation: fadeIn 0.3s;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 800px;
+    position: relative;
+    animation: slideIn 0.3s;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #666;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #333;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0}
+    to {opacity: 1}
+}
+
+@keyframes slideIn {
+    from {transform: translateY(-100px); opacity: 0}
+    to {transform: translateY(0); opacity: 1}
+}
+
+.expense-text {
+    color: #f44336;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.remaining-text {
+    color: #4CAF50;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* 修改計算結果標題樣式 */
+.modal-content h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 2rem;
+    font-weight: bold;
+}

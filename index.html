@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>薪資支出與存款計算器</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>薪資支出與存款計算器</h1>
+        
+        <div class="income-section">
+            <h2>收入</h2>
+            <div class="input-group">
+                <label for="salary">月薪：</label>
+                <input type="number" id="salary" placeholder="請輸入月薪">
+            </div>
+        </div>
+
+        <div class="savings-section">
+            <h2>存款（自由調整）</h2>
+            <div class="savings-control">
+                <div class="ratio-control">
+                    <input type="range" 
+                           class="savings-slider" 
+                           id="savingsRatio" 
+                           min="0" 
+                           max="100" 
+                           value="30" 
+                           step="5">
+                    <span id="savingsRatioValue" class="ratio-value">30%</span>
+                </div>
+            </div>
+            <p>應存金額：<span id="savingsAmount">0</span> 元</p>
+        </div>
+
+        <div class="expenses-section">
+            <h2>固定支出</h2>
+            <div class="input-group">
+                <label for="rent">房租：</label>
+                <input type="number" id="rent" placeholder="請輸入房租">
+            </div>
+            <div class="input-group">
+                <label for="utilities">水電費：</label>
+                <input type="number" id="utilities" placeholder="請輸入水電費">
+            </div>
+            <div class="input-group">
+                <label for="food">伙食費：</label>
+                <input type="number" id="food" placeholder="請輸入伙食費">
+            </div>
+            <div class="input-group">
+                <label for="transport">交通費：</label>
+                <input type="number" id="transport" placeholder="請輸入交通費">
+            </div>
+        </div>
+
+        <button onclick="calculate()">計算</button>
+        
+        <div id="resultModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>計算結果</h2>
+                <div class="results-container">
+                    <div class="text-results">
+                        <p>總支出：<span id="totalExpenses" class="expense-text">0</span> 元</p>
+                        <p>存款：<span id="savings">0</span> 元</p>
+                        <p>實際可支配金額：<span id="remaining" class="remaining-text">0</span> 元</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="expensesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // 監聽滑桿變化
+        document.getElementById('savingsRatio').addEventListener('input', function(e) {
+            const ratio = parseInt(e.target.value);
+            const ratioElement = document.getElementById('savingsRatioValue');
+            
+            // 根據比例設定不同的顏色
+            if (ratio <= 20) {
+                ratioElement.className = 'ratio-value warning';
+            } else if (ratio >= 30 && ratio <= 50) {
+                ratioElement.className = 'ratio-value good';
+            } else {
+                ratioElement.className = 'ratio-value danger';
+            }
+            
+            ratioElement.textContent = ratio + '%';
+            calculateSavings();
+        });
+
+        function calculateSavings() {
+            const income = parseFloat(document.getElementById('salary').value) || 0;
+            const ratio = parseFloat(document.getElementById('savingsRatio').value) / 100;
+            const savings = income * ratio;
+            
+            // 更新顯示的存款金額
+            document.getElementById('savingsAmount').textContent = Math.round(savings);
+            document.getElementById('savings').textContent = Math.round(savings);
+        }
+
+        // 獲取彈出視窗元素
+        const modal = document.getElementById('resultModal');
+        const closeBtn = document.getElementsByClassName('close')[0];
+
+        // 關閉彈出視窗的功能
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // 點擊視窗外區域也可以關閉
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        function calculate() {
+            // 獲取所有輸入值
+            const salary = parseFloat(document.getElementById('salary').value) || 0;
+            const rent = parseFloat(document.getElementById('rent').value) || 0;
+            const utilities = parseFloat(document.getElementById('utilities').value) || 0;
+            const food = parseFloat(document.getElementById('food').value) || 0;
+            const transport = parseFloat(document.getElementById('transport').value) || 0;
+            const savingsRatio = parseFloat(document.getElementById('savingsRatio').value) / 100;
+
+            // 計算存款金額
+            const savings = salary * savingsRatio;
+            
+            // 計算總支出
+            const totalExpenses = rent + utilities + food + transport;
+            
+            // 計算剩餘可支配金額
+            const remaining = salary - totalExpenses - savings;
+
+            // 更新顯示結果
+            document.getElementById('totalExpenses').textContent = Math.round(totalExpenses);
+            document.getElementById('savings').textContent = Math.round(savings);
+            document.getElementById('remaining').textContent = Math.round(remaining);
+
+            // 更新圓餅圖
+            updateChart(rent, utilities, food, transport, savings, remaining);
+
+            // 顯示彈出視窗
+            modal.style.display = "block";
+        }
+
+        function updateChart(rent, utilities, food, transport, savings, remaining) {
+            const ctx = document.getElementById('expensesChart').getContext('2d');
+            
+            // 如果已經有圖表，先銷毀它
+            if (window.myChart) {
+                window.myChart.destroy();
+            }
+
+            window.myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['房租', '水電費', '伙食費', '交通費', '存款', '剩餘金額'],
+                    datasets: [{
+                        data: [rent, utilities, food, transport, savings, remaining],
+                        backgroundColor: [
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#4BC0C0',
+                            '#9966FF',
+                            '#FF9F40'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        },
+                        title: {
+                            display: true,
+                            text: '收支分配圖'
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
