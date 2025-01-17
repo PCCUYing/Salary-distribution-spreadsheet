@@ -54,17 +54,6 @@
 ![image](https://github.com/user-attachments/assets/a06fc126-6ff5-4faa-a863-4f9a7c2df9df)
 ![image](https://github.com/user-attachments/assets/556bfa16-49cd-4b03-a1b7-cafa95c5aebe)
 
----
-
-## 截圖展示
-
-### 主畫面
-
-
-
-### 計算結果
-
-
 
 ---
 
